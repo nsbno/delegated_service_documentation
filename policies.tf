@@ -159,7 +159,14 @@ data "aws_iam_policy_document" "s3_for_internal_accounts" {
     resources = [aws_s3_bucket.verified.arn, "${aws_s3_bucket.verified.arn}/*"]
     principals {
       type        = "AWS"
-      identifiers = formatlist("arn:aws:iam::%s:root", var.trusted_accounts)
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalOrgID"
+      values = [
+        local.current_organization_id
+      ]
     }
   }
 }
