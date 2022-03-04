@@ -1,6 +1,6 @@
 # delegated_service_documentation
 
-
+![Delegated service documentation](servicedocumentation.png)
 
 ```terraform
 resource "aws_s3_bucket_object" "delegated_service_documentation" {​​
