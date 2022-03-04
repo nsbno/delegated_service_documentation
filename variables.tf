@@ -29,11 +29,6 @@ variable "trusted_accounts" {
   default     = []
 }
 
-variable "fallback_deployment_package" {
-  description = "An S3 URI (e.g., `s3://<bucket>/<filename>.zip`) to a ZIP file in S3 to deploy if there are no recent executions to re-run."
-  type        = string
-}
-
 variable "slack_webhook_url" {
   description = "A Slack webhook URL to send messages to."
   default     = ""
