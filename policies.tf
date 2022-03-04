@@ -27,19 +27,6 @@ data "aws_iam_policy_document" "sqs_for_forwarder" {
   }
 }
 
-data "aws_iam_policy_document" "logs_for_lambda" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      "arn:aws:logs:${local.current_region}:${local.current_account_id}:log-group:/aws/lambda/${aws_lambda_function.this.function_name}:*",
-    ]
-  }
-}
-
 data "aws_iam_policy_document" "logs_for_forwarder" {
   statement {
     effect = "Allow"
@@ -63,26 +50,6 @@ data "aws_iam_policy_document" "lambda_assume" {
     }
   }
 }
-
-data "aws_iam_policy_document" "sfn_for_lambda" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "states:StartExecution",
-      "states:ListExecutions"
-    ]
-    resources = [var.state_machine_arn]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "states:DescribeExecution"
-    ]
-    resources = ["arn:aws:states:${local.current_region}:${local.current_account_id}:execution:${local.state_machine_name}:*"]
-  }
-}
-
 
 data "aws_iam_policy_document" "s3_for_lambda" {
   statement {
