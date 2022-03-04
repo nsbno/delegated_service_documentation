@@ -2,6 +2,11 @@ data "aws_caller_identity" "this" {}
 data "aws_region" "this" {}
 data "aws_organizations_organization" "this" {}
 
+locals {
+  current_account_id      = data.aws_caller_identity.this.account_id
+  current_region          = data.aws_region.this.name
+  current_organization_id = data.aws_organizations_organization.this.id
+}
 
 ###################################################
 #                                                 #
