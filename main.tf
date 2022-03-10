@@ -63,6 +63,16 @@ resource "aws_s3_bucket_notification" "this" {
   }
 }
 
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.staging.id
+
+  queue {
+    queue_arn     = aws_sqs_queue.service_doc.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_suffix = ".json"
+  }
+}
+
 resource "aws_lambda_permission" "allow_s3" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.forwarder.function_name
@@ -77,6 +87,32 @@ resource "aws_sqs_queue" "this" {
   message_retention_seconds   = 1209600
   visibility_timeout_seconds  = var.lambda_timeout * 2
   tags                        = var.tags
+}
+
+resource "aws_sqs_queue" "service_doc" {
+  name                        = "${var.name_prefix}-service-documentation.fifo"
+  fifo_queue                  = true
+  content_based_deduplication = true
+  message_retention_seconds   = 1209600
+  visibility_timeout_seconds  = var.lambda_timeout * 2
+  tags                        = var.tags
+  
+  policy = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:*:*:s3-event-notification-queue",
+      "Condition": {
+        "ArnEquals": { "aws:SourceArn": "${aws_s3_bucket.staging.arn}" }
+      }
+    }
+  ]
+}
+POLICY
 }
 
 #######################################
