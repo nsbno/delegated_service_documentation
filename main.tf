@@ -90,7 +90,7 @@ resource "aws_sqs_queue" "this" {
 }
 
 resource "aws_sqs_queue" "service_doc" {
-  name                        = "${var.name_prefix}-service-documentation.fifo"
+  name                        = "${var.name_prefix}-delegated-service-documentation"
   tags                        = var.tags
   
   policy = <<POLICY
