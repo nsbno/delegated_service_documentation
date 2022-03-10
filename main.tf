@@ -91,10 +91,6 @@ resource "aws_sqs_queue" "this" {
 
 resource "aws_sqs_queue" "service_doc" {
   name                        = "${var.name_prefix}-service-documentation.fifo"
-  fifo_queue                  = true
-  content_based_deduplication = true
-  message_retention_seconds   = 1209600
-  visibility_timeout_seconds  = var.lambda_timeout * 2
   tags                        = var.tags
   
   policy = <<POLICY
