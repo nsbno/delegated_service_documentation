@@ -54,17 +54,6 @@ resource "aws_s3_bucket_policy" "s3_to_external_accounts" {
   policy = data.aws_iam_policy_document.s3_for_external_accounts.json
 }
 
-resource "aws_s3_bucket_notification" "this" {
-  bucket = aws_s3_bucket.staging.id
-
-queue {
-    id            = "servicedoc"
-    queue_arn     = aws_sqs_queue.service_doc.arn
-    events        = ["s3:ObjectCreated:*"]
-    filter_suffix = ".json"
-  }
-}
-
 resource "aws_lambda_permission" "allow_s3" {
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.forwarder.function_name
