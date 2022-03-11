@@ -60,7 +60,7 @@ resource "aws_s3_bucket_notification" "this" {
   lambda_function {
     lambda_function_arn = aws_lambda_function.forwarder.arn
     events              = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
-    filter_suffix       = ".json"
+    filter_suffix       = ".txt"
   }
 
   queue {
