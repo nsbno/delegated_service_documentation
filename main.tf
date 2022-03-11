@@ -57,13 +57,7 @@ resource "aws_s3_bucket_policy" "s3_to_external_accounts" {
 resource "aws_s3_bucket_notification" "this" {
   bucket = aws_s3_bucket.staging.id
 
-  lambda_function {
-    lambda_function_arn = aws_lambda_function.forwarder.arn
-    events              = ["s3:ObjectCreated:*", "s3:ObjectRemoved:*"]
-    filter_suffix       = ".txt"
-  }
-
-  queue {
+queue {
     queue_arn     = aws_sqs_queue.service_doc.arn
     events        = ["s3:ObjectCreated:*"]
     filter_suffix = ".json"
