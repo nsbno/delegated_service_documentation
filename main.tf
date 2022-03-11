@@ -61,6 +61,17 @@ resource "aws_lambda_permission" "allow_s3" {
   source_arn    = aws_s3_bucket.staging.arn
 }
 
+resource "aws_s3_bucket_notification" "this" {
+  bucket = aws_s3_bucket.staging.id
+
+queue {
+    id            = "servicedoc"
+    queue_arn     = aws_sqs_queue.service_doc.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_suffix = ".json"
+  }
+}
+
 resource "aws_sqs_queue" "this" {
   name                        = "${var.name_prefix}-delegated-service-documentation.fifo"
   fifo_queue                  = true
@@ -82,7 +93,7 @@ resource "aws_sqs_queue" "service_doc" {
       "Effect": "Allow",
       "Principal": "*",
       "Action": "sqs:SendMessage",
-      "Resource": "arn:aws:sqs:*:*:s3-event-notification-queue",
+      "Resource": "arn:aws:sqs:*:*:*-delegated-service-documentation",
       "Condition": {
         "ArnEquals": { "aws:SourceArn": "${aws_s3_bucket.staging.arn}" }
       }
