@@ -25,9 +25,6 @@ locals {
 
 resource "aws_s3_bucket" "verified" {
   bucket = var.verified_bucket_name == "" ? "${local.current_account_id}-${var.name_prefix}-service-documentation" : var.verified_bucket_name
-  versioning {
-    enabled = true
-  }
   tags = var.tags
 }
 
@@ -43,9 +40,6 @@ resource "aws_s3_bucket_policy" "s3_to_internal_accounts" {
 ###################################################
 resource "aws_s3_bucket" "staging" {
   bucket = var.staging_bucket_name == "" ? "${local.current_account_id}-${var.name_prefix}-delegated-service-documentation" : var.staging_bucket_name
-  versioning {
-    enabled = true
-  }
   tags = var.tags
 }
 
