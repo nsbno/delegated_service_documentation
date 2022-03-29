@@ -3,16 +3,6 @@ variable "name_prefix" {
   type        = string
 }
 
-variable "state_machine_arn" {
-  description = "An ARN of a deployment pipeline implemented as an AWS Step Functions state machine that the Lambda will trigger upon verified service documentationconfiguration."
-  type        = string
-}
-
-variable "process_sqs_messages" {
-  description = "Whether to enable or disable Lambda processing of messages from SQS. Disabling this effectively disables Delegated service documentationas no S3 events will be processed (but will remain on the queue)."
-  default     = true
-}
-
 variable "verified_bucket_name" {
   description = "An optional bucket name to use when creating a bucket for holding verified service documentationconfiguration."
   default     = ""
@@ -29,19 +19,9 @@ variable "trusted_accounts" {
   default     = []
 }
 
-variable "slack_webhook_url" {
-  description = "A Slack webhook URL to send messages to."
-  default     = ""
-}
-
-variable "lambda_timeout" {
-  description = "The maximum number of seconds the Lambda is allowed to run."
+variable "timeout" {
+  description = "sqs timeout"
   default     = 180
-}
-
-variable "lambda_log_retention_in_days" {
-  description = "The number of days to retain CloudWatch logs associated with the Lambda functions created by the module."
-  default     = 30
 }
 
 variable "tags" {

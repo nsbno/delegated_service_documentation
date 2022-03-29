@@ -27,56 +27,7 @@ data "aws_iam_policy_document" "sqs_for_forwarder" {
   }
 }
 
-data "aws_iam_policy_document" "logs_for_forwarder" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      "arn:aws:logs:${local.current_region}:${local.current_account_id}:log-group:/aws/lambda/${aws_lambda_function.forwarder.function_name}:*",
-    ]
-  }
-}
-
-data "aws_iam_policy_document" "lambda_assume" {
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-    principals {
-      identifiers = ["lambda.amazonaws.com"]
-      type        = "Service"
-    }
-  }
-}
-
-data "aws_iam_policy_document" "s3_for_lambda" {
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:Get*",
-      "s3:List*",
-    ]
-    resources = [
-      aws_s3_bucket.staging.arn,
-      "${aws_s3_bucket.staging.arn}/*",
-      aws_s3_bucket.verified.arn,
-      "${aws_s3_bucket.verified.arn}/*"
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "s3:PutObject*",
-      "s3:DeleteObject*",
-    ]
-    resources = ["${aws_s3_bucket.verified.arn}/*"]
-  }
-}
-
-data "aws_iam_policy_document" "sqs_for_lambda" {
+data "aws_iam_policy_document" "sqs_access" {
   statement {
     effect = "Allow"
     actions = [
