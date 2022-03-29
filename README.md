@@ -3,22 +3,17 @@
 ![Delegated service documentation](servicedocumentation.png)
 
 ```terraform
-resource "aws_s3_bucket_object" "delegated_service_documentation" {​​
-  bucket = local.service_documentation_bucket​​
-  applicationname = ${var.name_prefix}
-  slack = "#team-kjøretøy"
-
-  api_gateway_arn = "arn:aws:1234"
-  # OR
-  swagger_file = file("./test.openapi.yaml")
-
-  about_file = file("./docs/about.adoc")
-  owner = "budgetowner"@vy.no
-  technicalowner = "tekniskowner"@vy.no
-  servicesla = "99.8"
-  growthmetric = "transaction count"
-  aktivitetskode = "123533"
-
-  content_type = "application/json"​
-}​
+module "servicedoc" {
+  source                      = "github.com/nsbno/servicedocumentation?ref=5da4430"  
+  name_prefix                 = local.name_prefix
+  env                         = local.environment
+  current_account_id          = data.aws_caller_identity.this.account_id
+  slack                       = "#slackchannel"
+  owner                       = "budgetowner@vy.no"
+  technicalowner              = "tekniskowner@vy.no"
+  servicesla                  = "99.7"
+  growthmetric                = "transaction count"
+  aktivitetskode              = "12345"
+  api_gateway_id              = "abcde31kh5"
+}
 ```
