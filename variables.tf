@@ -3,6 +3,11 @@ variable "name_prefix" {
   type        = string
 }
 
+variable "site_name" {
+  description = "site name"
+  type        = string
+}
+
 variable "verified_bucket_name" {
   description = "An optional bucket name to use when creating a bucket for holding verified service documentationconfiguration."
   default     = ""
