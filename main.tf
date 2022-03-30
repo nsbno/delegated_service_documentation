@@ -1,3 +1,9 @@
+provider "aws" {
+  # Module expects aws.certificate_provider set to us-east-1 to be passed in via the "providers" argument
+  alias   = "certificate_provider"
+  region  = "us-east-1"
+}
+
 data "aws_caller_identity" "this" {}
 data "aws_region" "this" {}
 data "aws_organizations_organization" "this" {}
@@ -21,6 +27,23 @@ resource "aws_s3_bucket" "verified" {
 
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "origin access identity for s3/cloudfront"
+}
+
+resource "aws_acm_certificate" "cert_website" {
+  domain_name       = var.site_name
+  validation_method = "DNS"
+  provider          = aws.certificate_provider
+  tags              = var.tags
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_acm_certificate_validation" "main" {
+  certificate_arn         = aws_acm_certificate.cert_website.arn
+  validation_record_fqdns = [for record in aws_route53_record.cert_website_validation : record.fqdn]
+  provider                = aws.certificate_provider
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
