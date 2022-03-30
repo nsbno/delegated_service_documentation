@@ -25,6 +25,10 @@ resource "aws_s3_bucket" "verified" {
   tags = var.tags
 }
 
+data "aws_route53_zone" "main" {
+  name = var.hosted_zone_name
+}
+
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "origin access identity for s3/cloudfront"
 }

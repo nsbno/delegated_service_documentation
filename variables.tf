@@ -3,6 +3,11 @@ variable "name_prefix" {
   type        = string
 }
 
+variable "hosted_zone_name" {
+  description = "The name of the hosted zone in which to register this site"
+  type        = string
+}
+
 variable "site_name" {
   description = "site name"
   type        = string
