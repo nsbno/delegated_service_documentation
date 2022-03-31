@@ -85,22 +85,24 @@ data "aws_iam_policy_document" "s3_for_external_accounts" {
   }
 }
 
-
-data "aws_iam_policy_document" "s3_for_internal_accounts" {
+data "aws_iam_policy_document" "s3_cloudfront" {
   statement {
-    effect    = "Allow"
-    actions   = ["s3:Get*", "s3:List*"]
-    resources = [aws_s3_bucket.verified.arn, "${aws_s3_bucket.verified.arn}/*"]
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.verified}/*"]
+
     principals {
       type        = "AWS"
-      identifiers = ["*"]
+      identifiers = [aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn]
     }
-    condition {
-      test     = "StringEquals"
-      variable = "aws:PrincipalOrgID"
-      values = [
-        local.current_organization_id
-      ]
+  }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.verified.arn]
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn]
     }
   }
 }

@@ -149,9 +149,9 @@ resource "aws_route53_record" "wwww_a" {
   }
 }
 
-resource "aws_s3_bucket_policy" "s3_to_internal_accounts" {
+resource "aws_s3_bucket_policy" "s3_to_cloudfront" {
   bucket = aws_s3_bucket.verified.id
-  policy = data.aws_iam_policy_document.s3_for_internal_accounts.json
+  policy = data.aws_iam_policy_document.s3_cloudfront.json
 }
 
 ###################################################
