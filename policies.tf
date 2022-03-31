@@ -88,7 +88,7 @@ data "aws_iam_policy_document" "s3_for_external_accounts" {
 data "aws_iam_policy_document" "s3_cloudfront" {
   statement {
     actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.verified}/*"]
+    resources = ["${aws_s3_bucket.verified.arn}/*"]
 
     principals {
       type        = "AWS"
