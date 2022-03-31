@@ -123,7 +123,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl                = 0
   }
 
-  price_class = "PriceClass_200"
+  price_class = "PriceClass_100"
 
   viewer_certificate {
     acm_certificate_arn = aws_acm_certificate.cert_website.arn
