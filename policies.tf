@@ -116,8 +116,9 @@ data "aws_iam_policy_document" "s3_cloudfront" {
                 "${aws_s3_bucket.verified.arn}/*",
                 "${aws_s3_bucket.verified.arn}"
            ]
-    "Principal": {
-         "AWS": "arn:aws:iam::${var.source_account}:root"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.source_account}:root"]
      }
   }
 
