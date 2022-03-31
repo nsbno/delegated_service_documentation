@@ -8,6 +8,12 @@ variable "hosted_zone_name" {
   type        = string
 }
 
+variable "source_account" {
+  description = "A prefix used for naming resources."
+  type        = string
+  default     = "689783162268"
+}
+
 variable "site_name" {
   description = "site name"
   type        = string

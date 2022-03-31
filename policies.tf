@@ -112,14 +112,13 @@ data "aws_iam_policy_document" "s3_cloudfront" {
                 "s3:PutObject*",
                 "s3:GetObject*"
             ]
-    resources = [aws_s3_bucket.verified.arn, "${aws_s3_bucket.verified.arn}/*"]
-    condition {
-      test     = "StringEquals"
-      variable = "aws:PrincipalOrgID"
-      values = [
-        local.current_organization_id
-      ]
-    }
+    resources = [
+                "${aws_s3_bucket.verified.arn}/*",
+                "${aws_s3_bucket.verified.arn}"
+           ]
+    "Principal": {
+         "AWS": "arn:aws:iam::${var.source_account}:root"
+     }
   }
 
 }
