@@ -105,4 +105,21 @@ data "aws_iam_policy_document" "s3_cloudfront" {
       identifiers = [aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn]
     }
   }
+
+  statement {
+    actions   = [
+                "s3:PutObjectAcl*",
+                "s3:PutObject*",
+                "s3:GetObject*"
+            ]
+    resources = [aws_s3_bucket.verified.arn, "${aws_s3_bucket.verified.arn}/*"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalOrgID"
+      values = [
+        local.current_organization_id
+      ]
+    }
+  }
+
 }
