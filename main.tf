@@ -250,11 +250,6 @@ resource "aws_lambda_function" "build_antora_site" {
   handler          = "build_antora_site.lambda_handler"
   role             = aws_iam_role.build_antora_site_lamda_role.arn
   runtime          = "python3.8"
-  environment {
-    variables = {
-      UserPoolId = var.user_pool_id
-    }
-  }
 }
 
 resource "aws_iam_role" "build_antora_site_lamda_role" {
@@ -263,8 +258,8 @@ resource "aws_iam_role" "build_antora_site_lamda_role" {
 
 resource "aws_iam_role_policy" "build_antora_site_permsissions" {
   name   = "${var.name_prefix}-purge-cognito-users"
-  policy = data.aws_iam_policy_document.build_antora_permissions.json
-  role   = aws_iam_role.build_antora_site_users_lamda_role.id
+  policy = data.aws_iam_policy_document.build_antora_site_permissions.json
+  role   = aws_iam_role.build_antora_site_lamda_role.id
 }
 
 data "aws_iam_policy_document" "lambda_assume" {
