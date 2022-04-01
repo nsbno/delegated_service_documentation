@@ -180,15 +180,6 @@ queue {
   }
 }
 
-resource "aws_sqs_queue" "this" {
-  name                        = "${var.name_prefix}-delegated-service-documentation.fifo"
-  fifo_queue                  = true
-  content_based_deduplication = true
-  message_retention_seconds   = 1209600
-  visibility_timeout_seconds  = var.timeout * 2
-  tags                        = var.tags
-}
-
 resource "aws_sqs_queue" "service_doc" {
   name                        = "${var.name_prefix}-delegated-service-documentation"
   tags                        = var.tags
@@ -237,6 +228,11 @@ resource "aws_iam_user_policy_attachment" "s3_write_to_circleci" {
 # autobuild of antora                             #
 #                                                 #
 ###################################################
+resource "aws_lambda_event_source_mapping" "new_service" {
+  event_source_arn = aws_sqs_queue.service_doc.arn
+  function_name    = aws_lambda_function.build_antora_site.arn
+}
+
 data "archive_file" "build_antora_site" {
   type        = "zip"
   source_file = "${path.module}/src/build-antora-site/build-antora-site.py"
