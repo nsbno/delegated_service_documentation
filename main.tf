@@ -250,6 +250,16 @@ resource "aws_lambda_function" "build_antora_site" {
   handler          = "build_antora_site.lambda_handler"
   role             = aws_iam_role.build_antora_site_lamda_role.arn
   runtime          = "python3.8"
+  environment {
+    variables = {
+      ecs_cluster = var.ecs_cluster
+      fargate_lambda_name = var.fargate_lambda_name
+      image = var.image
+      subnets = var.subnets
+      task_execution_role_arn = var.task_execution_role_arn
+      task_role_arn = var.task_role_arn
+    }
+  }
 }
 
 resource "aws_iam_role" "build_antora_site_lamda_role" {
