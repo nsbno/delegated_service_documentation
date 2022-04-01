@@ -243,7 +243,7 @@ resource "aws_lambda_function" "build_antora_site" {
   filename         = data.archive_file.build_antora_site.output_path
   source_code_hash = filebase64sha256(data.archive_file.build_antora_site.output_path)
   function_name    = "${var.name_prefix}-build-antora-site"
-  handler          = "build_antora_site.lambda_handler"
+  handler          = "build-antora-site.lambda_handler"
   role             = aws_iam_role.build_antora_site_lamda_role.arn
   runtime          = "python3.8"
   environment {
