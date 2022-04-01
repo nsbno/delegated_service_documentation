@@ -126,20 +126,16 @@ def lambda_handler(event, context):
 
 
   try:
-#    eventrecord = str(event["Records"][0]["body"])
-#    eventrecor = json.loads(eventrecord)
-#    logger.info("eventrecor " +  str(eventrecor))
-#    logger.info("awsRegion record " +  str(eventrecor["Records"][0]["awsRegion"]))
-#    logger.info("name record " +  str(eventrecor["Records"][0]["s3"]["bucket"]["name"]))
-#    s3bucket = eventrecor["Records"][0]["s3"]["bucket"]["name"]
-#    logger.info("key record " +  str(eventrecor["Records"][0]["s3"]["object"]["key"]))
-#    s3path = eventrecor["Records"][0]["s3"]["object"]["key"]
- 
-    s3bucket = "061938725231-infrademo-delegated-service-documentation"
-    s3path = "stage/455398910694/infrademo.json"
+    eventrecord = str(event["Records"][0]["body"])
+    eventrecor = json.loads(eventrecord)
+    logger.info("eventrecor " +  str(eventrecor))
+    logger.info("awsRegion record " +  str(eventrecor["Records"][0]["awsRegion"]))
+    logger.info("name record " +  str(eventrecor["Records"][0]["s3"]["bucket"]["name"]))
+    s3bucket = eventrecor["Records"][0]["s3"]["bucket"]["name"]
+    logger.info("key record " +  str(eventrecor["Records"][0]["s3"]["object"]["key"]))
+    s3path = eventrecor["Records"][0]["s3"]["object"]["key"]
     data = s3.get_object(Bucket=s3bucket, Key=s3path)
     contents = data['Body'].read()
-#    print(contents.decode("utf-8"))
     developerportalchanges = json.loads(contents.decode("utf-8"))
     gitresult = updategit(
         developerportalchanges["about_file"],
