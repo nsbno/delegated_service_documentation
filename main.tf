@@ -306,6 +306,6 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
     actions = [
       "lambda:InvokeFunction",
     ]
-    resources = "arn:aws:lambda:eu-west-1:${local.current_account_id}:function:${var.fargate_lambda_name}"
+    resources = ["arn:aws:lambda:eu-west-1:${local.current_account_id}:function:${var.fargate_lambda_name}"]
   }
 }
