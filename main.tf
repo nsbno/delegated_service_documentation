@@ -211,3 +211,22 @@ resource "aws_sqs_queue" "service_doc" {
 POLICY
 }
 
+###################################################
+#                                                 #
+# Content update                                  #
+#                                                 #
+###################################################
+resource "aws_iam_user" "portal_content" {
+  name          = "${var.name_prefix}-portal-content"
+  force_destroy = "true"
+}
+
+resource "aws_iam_policy" "s3_write" {
+  name_prefix = "${var.name_prefix}-updateportal-content"
+  description = "Policy that grants access to update portal"
+  policy      = data.aws_iam_policy_document.s3_policy.json
+}
+
+resource "aws_iam_access_key" "circle_ci_portal_content" {
+  user = aws_iam_user.portal_content.name
+}
