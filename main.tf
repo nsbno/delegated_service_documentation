@@ -239,8 +239,8 @@ resource "aws_iam_user_policy_attachment" "s3_write_to_circleci" {
 ###################################################
 data "archive_file" "build_antora_site" {
   type        = "zip"
-  source_file = "${path.module}/../../src/build-antora-site/build-antora-site.py"
-  output_path = "${path.module}/../../src/build-antora-site/build-antora-site.zip"
+  source_file = "${path.module}/src/build-antora-site/build-antora-site.py"
+  output_path = "${path.module}/src/build-antora-site/build-antora-site.zip"
 }
 
 resource "aws_lambda_function" "build_antora_site" {
