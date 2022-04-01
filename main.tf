@@ -213,7 +213,7 @@ POLICY
 
 ###################################################
 #                                                 #
-# Content update                                  #
+# CircleCIupdate                                  #
 #                                                 #
 ###################################################
 resource "aws_iam_user" "portal_content" {
@@ -230,4 +230,64 @@ resource "aws_iam_policy" "s3_write" {
 resource "aws_iam_user_policy_attachment" "s3_write_to_circleci" {
   user       = aws_iam_user.portal_content.name
   policy_arn = aws_iam_policy.s3_write.arn
+}
+
+###################################################
+#                                                 #
+# autobuild of antora                             #
+#                                                 #
+###################################################
+data "archive_file" "build_antora_site" {
+  type        = "zip"
+  source_file = "${path.module}/../../src/build-antora-site/build-antora-site.py"
+  output_path = "${path.module}/../../src/build-antora-site/build-antora-site.zip"
+}
+
+resource "aws_lambda_function" "build_antora_site" {
+  filename         = data.archive_file.build_antora_site.output_path
+  source_code_hash = filebase64sha256(data.archive_file.build_antora_site.output_path)
+  function_name    = "${var.name_prefix}-build-antora-site"
+  handler          = "build_antora_site.lambda_handler"
+  role             = aws_iam_role.build_antora_site_lamda_role.arn
+  runtime          = "python3.8"
+  environment {
+    variables = {
+      UserPoolId = var.user_pool_id
+    }
+  }
+}
+
+resource "aws_iam_role" "build_antora_site_lamda_role" {
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
+}
+
+resource "aws_iam_role_policy" "build_antora_site_permsissions" {
+  name   = "${var.name_prefix}-purge-cognito-users"
+  policy = data.aws_iam_policy_document.build_antora_permissions.json
+  role   = aws_iam_role.build_antora_site_users_lamda_role.id
+}
+
+data "aws_iam_policy_document" "lambda_assume" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "build_antora_site_permissions" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup",
+      "cloudwatch:PutMetricData",
+    ]
+    resources = ["*"]
+  }
 }
