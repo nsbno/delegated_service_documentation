@@ -227,6 +227,7 @@ resource "aws_iam_policy" "s3_write" {
   policy      = data.aws_iam_policy_document.s3_policy.json
 }
 
-resource "aws_iam_access_key" "circle_ci_portal_content" {
-  user = aws_iam_user.portal_content.name
+resource "aws_iam_user_policy_attachment" "s3_write_to_circleci" {
+  user       = aws_iam_user.portal_content.name
+  policy_arn = aws_iam_policy.s3_write.arn
 }
