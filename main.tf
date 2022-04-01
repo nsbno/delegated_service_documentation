@@ -299,6 +299,6 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
       "sqs:DeleteMessage",
       "sqs:ChangeMessageVisibility",
     ]
-    resources = aws_sqs_queue.service_doc.arn
+    resources = [aws_sqs_queue.service_doc.arn]
   }
 }
