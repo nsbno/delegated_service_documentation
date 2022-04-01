@@ -291,4 +291,14 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
     ]
     resources = ["*"]
   }
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:GetQueueAttributes",
+      "sqs:DeleteMessage",
+      "sqs:ChangeMessageVisibility",
+    ]
+    resources = aws_sqs_queue.service_doc.arn
+  }
 }
