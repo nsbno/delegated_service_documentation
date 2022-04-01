@@ -125,20 +125,19 @@ data "aws_iam_policy_document" "s3_cloudfront" {
 }
 
 data "aws_iam_policy_document" "s3_policy" {
+  version = "2012-10-17"
+
   statement {
-    sid    = "Allow all to DWH"
     effect = "Allow"
     actions = [
             "s3:PutObject",
             "s3:PutObjectAcl*",
             "s3:List*"
     ]
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
     resources = [
                 "${aws_s3_bucket.verified.arn}/*",
                 "${aws_s3_bucket.verified.arn}"
            ]
   }
+}
+
