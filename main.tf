@@ -263,7 +263,7 @@ resource "aws_iam_role" "build_antora_site_lamda_role" {
 }
 
 resource "aws_iam_role_policy" "build_antora_site_permsissions" {
-  name   = "${var.name_prefix}-purge-cognito-users"
+  name   = "${var.name_prefix}-get-antora-files"
   policy = data.aws_iam_policy_document.build_antora_site_permissions.json
   role   = aws_iam_role.build_antora_site_lamda_role.id
 }
@@ -300,6 +300,13 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
       "sqs:ChangeMessageVisibility",
     ]
     resources = [aws_sqs_queue.service_doc.arn]
+  }
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+    ]
+    resources = [aws_s3_bucket.staging.arn]
   }
   statement {
     effect = "Allow"

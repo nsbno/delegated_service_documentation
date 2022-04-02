@@ -172,7 +172,7 @@ def lambda_handler(event, context):
   except botocore.exceptions.ClientError as e:
     logger.info(
     "Updating developer portal repo failed " + str(e)
-    return "failed getting parameters"
+    return False
     )
     
   try:
