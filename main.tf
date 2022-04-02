@@ -331,7 +331,7 @@ resource "aws_iam_role" "task_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ECSTaskExecution" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   role       = aws_iam_role.task_execution_role.id
 }
 
