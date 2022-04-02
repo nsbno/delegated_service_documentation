@@ -322,6 +322,18 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
 
 ###################################################
 #                                                 #
+# Fargate run single task                         #
+#                                                 #
+###################################################
+
+module "single_use_fargate_task" {
+  source      = "github.com/nsbno/terraform-aws-single-use-fargate-task?ref=78e9578"
+  name_prefix = var.name_prefix
+  tags        = var.tags
+}
+
+###################################################
+#                                                 #
 # ECS cluster                                     #
 #                                                 #
 ###################################################
