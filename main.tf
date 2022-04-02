@@ -252,7 +252,7 @@ resource "aws_lambda_function" "build_antora_site" {
       fargate_lambda_name = var.fargate_lambda_name
       image = var.image
       subnets = var.subnets
-      task_execution_role_arn = aws_iam_role.task_execution_role.arn
+      task_execution_role_arn = aws_iam_role.antora_task_execution_role.arn
       task_role_arn = aws_iam_role.fargate_task.arn
     }
   }
@@ -347,19 +347,19 @@ resource "aws_ecs_cluster" "cluster" {
   }
 }
 
-resource "aws_iam_role" "task_execution_role" {
+resource "aws_iam_role" "antora_task_execution_role" {
   name               = "${var.name_prefix}-TaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
 resource "aws_iam_role_policy_attachment" "TaskExecution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-  role       = aws_iam_role.task_execution_role.id
+  role       = aws_iam_role.antora_task_execution_role.id
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatchexecrole" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
-  role       = aws_iam_role.task_execution_role.id
+  role       = aws_iam_role.antora_task_execution_role.id
 }
 
 resource "aws_iam_role" "fargate_task" {
