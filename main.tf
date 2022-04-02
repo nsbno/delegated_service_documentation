@@ -248,12 +248,12 @@ resource "aws_lambda_function" "build_antora_site" {
   runtime          = "python3.8"
   environment {
     variables = {
-      ecs_cluster = var.ecs_cluster
+      ecs_cluster = aws_ecs_cluster.cluster
       fargate_lambda_name = var.fargate_lambda_name
       image = var.image
       subnets = var.subnets
-      task_execution_role_arn = var.task_execution_role_arn
-      task_role_arn = var.task_role_arn
+      task_execution_role_arn = aws_iam_role.task_execution_role_arn
+      task_role_arn = aws_iam_role.fargate_task
     }
   }
 }
@@ -308,4 +308,29 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
     ]
     resources = ["arn:aws:lambda:eu-west-1:${local.current_account_id}:function:${var.fargate_lambda_name}"]
   }
+}
+
+###################################################
+#                                                 #
+# ECS cluster                                     #
+#                                                 #
+###################################################
+
+resource "aws_ecs_cluster" "cluster" {
+  name = "${var.name_prefix}-cluster"
+
+  setting {
+    name  = "antora_site"
+    value = "enabled"
+  }
+}
+
+resource "aws_iam_role" "task_execution_role" {
+  name               = "${var.name_prefix}-ECSTaskExecutionRole"
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
+}
+
+resource "aws_iam_role" "fargate_task" {
+  name               = "${var.name_prefix}-single-use-tasks"
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }

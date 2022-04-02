@@ -46,11 +46,6 @@ variable "tags" {
   default     = {}
 }
 
-variable "ecs_cluster" {
-  description = "The name of ecs_cluster"
-  type        = string
-}
-
 variable "fargate_lambda_name" {
   description = "The name of fargate_lambda_name"
   type        = string
@@ -66,12 +61,3 @@ variable "subnets" {
   type        = string
 }
 
-variable "task_execution_role_arn" {
-  description = "The name of the task_execution_role_arn"
-  type        = string
-}
-
-variable "task_role_arn" {
-  description = "The name of task_role_arn"
-  type        = string
-}
