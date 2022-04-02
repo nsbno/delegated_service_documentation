@@ -317,10 +317,10 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
 ###################################################
 
 resource "aws_ecs_cluster" "cluster" {
-  name = "${var.name_prefix}-cluster"
+  name = "${var.name_prefix}-antora-cluster"
 
   setting {
-    name  = "antora_site"
+    name  = "containerInsights"
     value = "enabled"
   }
 }
