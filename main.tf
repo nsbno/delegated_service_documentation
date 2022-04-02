@@ -331,12 +331,12 @@ resource "aws_iam_role" "task_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ECSTaskExecution" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonECSTaskExecutionRolePolicy"
   role       = aws_iam_role.task_execution_role.id
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatchexecrole" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/CloudWatchFullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
   role       = aws_iam_role.task_execution_role.id
 }
 
@@ -346,7 +346,7 @@ resource "aws_iam_role" "fargate_task" {
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatchtask" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/CloudWatchFullAccess"
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
   role       = aws_iam_role.fargate_task.id
 }
 
