@@ -351,6 +351,6 @@ resource "aws_iam_role_policy_attachment" "cloudwatchtask" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssmaccess" {
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonSSMReadOnlyAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
   role       = aws_iam_role.fargate_task.id
 }
