@@ -330,7 +330,27 @@ resource "aws_iam_role" "task_execution_role" {
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
+resource "aws_iam_role_policy_attachment" "ECSTaskExecution" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+  role       = aws_iam_role.task_execution_role.id
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatchexecrole" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/CloudWatchFullAccess"
+  role       = aws_iam_role.task_execution_role.id
+}
+
 resource "aws_iam_role" "fargate_task" {
   name               = "${var.name_prefix}-single-use-tasks"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatchtask" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/CloudWatchFullAccess"
+  role       = aws_iam_role.fargate_task.id
+}
+
+resource "aws_iam_role_policy_attachment" "ssmaccess" {
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonSSMReadOnlyAccess"
+  role       = aws_iam_role.fargate_task.id
 }
