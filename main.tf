@@ -348,11 +348,11 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 resource "aws_iam_role" "task_execution_role" {
-  name               = "${var.name_prefix}-ECSTaskExecutionRole"
+  name               = "${var.name_prefix}-TaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
-resource "aws_iam_role_policy_attachment" "ECSTaskExecution" {
+resource "aws_iam_role_policy_attachment" "TaskExecution" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   role       = aws_iam_role.task_execution_role.id
 }
