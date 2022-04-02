@@ -248,7 +248,7 @@ resource "aws_lambda_function" "build_antora_site" {
   runtime          = "python3.8"
   environment {
     variables = {
-      ecs_cluster = aws_ecs_cluster.cluster
+      ecs_cluster = aws_ecs_cluster.cluster.arn
       fargate_lambda_name = var.fargate_lambda_name
       image = var.image
       subnets = var.subnets
