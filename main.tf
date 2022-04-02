@@ -252,7 +252,7 @@ resource "aws_lambda_function" "build_antora_site" {
       fargate_lambda_name = var.fargate_lambda_name
       image = var.image
       subnets = var.subnets
-      task_execution_role_arn = aws_iam_role.task_execution_role_arn
+      task_execution_role_arn = aws_iam_role.task_execution_role
       task_role_arn = aws_iam_role.fargate_task
     }
   }
