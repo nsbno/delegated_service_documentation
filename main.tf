@@ -348,7 +348,7 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 resource "aws_iam_role" "antora_task_execution_role" {
-  name               = "${var.name_prefix}-TaskExecutionRole"
+  name               = "${var.name_prefix}-antora-TaskExecutionRole"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume.json
 }
 
