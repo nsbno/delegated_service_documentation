@@ -98,7 +98,7 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"\n"   
       f"cd ../../../../../home/modules/ROOT/pages\n"
       f"if grep -c {applicationname}::api.adoc services.adoc; then\n"
-      f"  echo 'service already added'\n"
+      f"  echo 'service already added {applicationname}'\n"
       f"  else\n"     
       f"  echo 'in loop'\n"
       f"  head -n -1 services.adoc > tmp.txt && mv tmp.txt services.adoc\n"
@@ -110,7 +110,6 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"\n"
       f"  git add services.adoc\n"
       f"fi\n"
-      f"echo 'after loop'\n"
       
       
       
