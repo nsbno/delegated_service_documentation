@@ -83,7 +83,7 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"cat >> api.adoc << EOF\n"
       f"= API Reference\n"
       f":page-layout: swagger\n"
-      f":page-swagger-url: {swagger_file}\n"
+      f":page-swagger-url: https://developer.common-services.vydev.io/json/{applicationname}.json\n"
       f":reftext: {applicationname}\n"
       f"EOF\n"
       f"\n"
