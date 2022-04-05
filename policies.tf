@@ -24,7 +24,8 @@ data "aws_iam_policy_document" "s3_for_external_accounts" {
     actions = [
       "s3:PutObject*",
       "s3:PutObjectAcl*",
-      "s3:GetObject*"
+      "s3:GetObject*",
+      "s3:DeleteObject*"
     ]
     resources = formatlist("${aws_s3_bucket.staging.arn}/%s/$${aws:PrincipalAccount}/*", ["dev", "test", "stage", "prod"])
     principals {
