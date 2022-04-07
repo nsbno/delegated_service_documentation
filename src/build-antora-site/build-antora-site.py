@@ -120,6 +120,80 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
   
   return cmd_to_run
 
+def updateportalgit(applicationname, services):
+  cmd_to_run = (
+      f"\n"
+      f"# --- Download SSH key\n"
+      f"mkdir -p ~/.ssh\n"
+      f"\n"
+      f"echo \"getting parameters\"\n"
+      f"\n"
+      f"aws ssm get-parameter \\\n"
+      f"  --name developer-portal-git-deploy-key \\\n"
+      f"  --region eu-west-1 \\\n"
+      f"  --with-decryption \\\n"
+      f"  --query Parameter.Value \\\n"
+      f"  --output text \\\n"
+      f"  > ~/.ssh/id_rsa\n"
+      f"\n"
+      f"chmod 600 ~/.ssh/id_rsa\n"
+      f"\n"
+      f"echo \"done!\"\n"
+      f"\n"
+      f"ssh-keyscan -H github.com >> ~/.ssh/known_hosts\n"
+      f"\n"
+      f"git config --global user.email \"machine-user@vy.no\"\n"
+      f"git config --global user.name \"machine-user\"\n"
+      f"\n"
+      f"git clone git@github.com:nsbno/developer-portal --branch master\n"
+      f"\n"
+      f"cd ./developer-portal/\n"
+      f"rm -f antora.yml\n"
+      f"\n"
+      f"echo \"Appending to file\"\n"
+      f"\n"
+      f"cat >> antora.yml << EOF\n"
+      f"site:\n"
+      f"t-t-title: Vy\n"
+      f"t-t-start_page: developer-portal::index.adoc"
+      f"\n"
+      f"content:\n"
+      f"t-t-t-t-branches: master\n"
+      f"t-t-t-t-sources:\n"
+      f"t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation\n"
+      f"t-t-t-t-t-t-start_path: home\n"
+      f"t-t-t-t-t-t-edit_url: false\n"
+      f"t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation.git\n"
+      f"t-t-t-t-t-t-start_path: services/traincomposition-train-activity\n"
+      f"t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation.git\n"
+      f"t-t-t-t-t-t-start_path: services/rollingstock-driftstjenester-backend\n"
+      f"\n"
+      f"ui:\n"
+      f"t-t-bundle:\n"
+      f"t-t-t-t-url: ./build/ui-bundle.zip\n"
+      f"t-t-t-t-snapshot: true\n"
+      f"t-t-supplemental_files: ./supplemental_ui\n"
+      f"\n"
+      f"asciidoc:\n"
+      f"t-t-extensions:\n"
+      f"t-t-- ./extensions/swagger-ui-api-gateway.js\n"
+      f"\n"
+      f"antora:\n"
+      f"t-extensions:\n"
+      f"t-t-t-t-- \"@antora/lunr-extension\"\n"
+      f"EOF\n"
+      f"\n"
+      f"echo 'sed -i \"s/t-/ /g\" antora.yml'\n"
+      f"sed -i \"s/t-/ /g\" antora.yml"
+      f"\n"      
+      f"git add antora.yml\n"
+      f"echo 'after loop'\n"
+      f"git commit -m \"Update service list for portal\"\n"
+      f"git push\n"
+  )  
+  
+  return cmd_to_run
+
 def lambda_handler(event, context):
   s3 = boto3.client('s3')
 #  logger.info("Raw event " +  str(event))
@@ -183,6 +257,38 @@ def lambda_handler(event, context):
     logger.info(
     "Updating confluence with service documetnation failed " + str(e)
     )
+
+
+  try: 
+    gitportal = updateportalgit(
+        developerportalchanges["applicationname"],
+        ["services1","service2"]
+    )
+  except botocore.exceptions.ClientError as e:
+    logger.info(
+    "Getting portal parameters failed " + str(e)
+    )
+
+  try:
+    lamdba_client = boto3.client("lambda")
+    response = lamdba_client.invoke(
+        InvocationType='Event',
+        FunctionName=os.environ["fargate_lambda_name"],
+        Payload=json.dumps({
+            "image": os.environ["image"],
+            "cmd_to_run": gitportal,
+            "subnets": json.loads(os.environ["subnets"]),
+            "ecs_cluster": os.environ["ecs_cluster"],
+            "task_role_arn": os.environ["task_role_arn"],
+            "task_execution_role_arn": os.environ["task_execution_role_arn"],
+            "fargate_lambda_name": os.environ["fargate_lambda_name"]
+        })
+    )
+  except botocore.exceptions.ClientError as e:
+    logger.info(
+    "Updating developer portal repo failed " + str(e)
+    )
+
     
   return {
     'statusCode': 200,
