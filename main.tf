@@ -309,7 +309,9 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
     ]
     resources =  [
                 "${aws_s3_bucket.staging.arn}/*",
-                "${aws_s3_bucket.staging.arn}"
+                "${aws_s3_bucket.staging.arn}",
+                "${aws_s3_bucket.verified.arn}/*",
+                "${aws_s3_bucket.verified.arn}"
            ]
   }
   statement {
