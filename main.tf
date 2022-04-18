@@ -254,6 +254,7 @@ resource "aws_lambda_function" "build_antora_site" {
       subnets = var.subnets
       task_execution_role_arn = aws_iam_role.antora_task_execution_role.arn
       task_role_arn = aws_iam_role.fargate_task.arn
+      servicedocumentaion_bucket = aws_s3_bucket.verified.name
     }
   }
 }

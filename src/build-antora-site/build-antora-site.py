@@ -3,6 +3,7 @@ import boto3
 import botocore
 import os
 import logging
+import csv
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -85,7 +86,7 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f":page-layout: swagger\n"
       f":page-swagger-url: https://developer.common-services.vydev.io/json/{applicationname}.json\n"
       f":reftext:"" {page-component-title}"
-      f"\n"
+		   
       f"EOF\n"
       f"\n"
       f"git add api.adoc\n"
@@ -111,9 +112,9 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"\n"
       f"  git add services.adoc\n"
       f"fi\n"
-      
-      
-      
+	  
+	  
+	  
       f"git commit -m \"Update service doc for {applicationname}\"\n"
       f"git push\n"
   )  
@@ -121,6 +122,8 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
   return cmd_to_run
 
 def updateportalgit(applicationname, services):
+  
+  
   cmd_to_run = (
       f"\n"
       f"# --- Download SSH key\n"
@@ -148,46 +151,57 @@ def updateportalgit(applicationname, services):
       f"git clone git@github.com:nsbno/developer-portal --branch master\n"
       f"\n"
       f"cd ./developer-portal/\n"
-      f"rm -f antora.yml\n"
+						   
       f"\n"
       f"echo \"Appending to file\"\n"
       f"\n"
-      f"cat >> antora.yml << EOF\n"
-      f"site:\n"
-      f"t-t-title: Vy\n"
-      f"t-t-start_page: developer-portal::index.adoc"
-      f"\n"
-      f"content:\n"
-      f"t-t-t-t-branches: master\n"
-      f"t-t-t-t-sources:\n"
-      f"t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation\n"
-      f"t-t-t-t-t-t-start_path: home\n"
-      f"t-t-t-t-t-t-edit_url: false\n"
-      f"t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation.git\n"
-      f"t-t-t-t-t-t-start_path: services/traincomposition-train-activity\n"
-      f"t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation.git\n"
-      f"t-t-t-t-t-t-start_path: services/rollingstock-driftstjenester-backend\n"
-      f"\n"
-      f"ui:\n"
-      f"t-t-bundle:\n"
-      f"t-t-t-t-url: ./build/ui-bundle.zip\n"
-      f"t-t-t-t-snapshot: true\n"
-      f"t-t-supplemental_files: ./supplemental_ui\n"
-      f"\n"
-      f"asciidoc:\n"
-      f"t-t-extensions:\n"
-      f"t-t-- ./extensions/swagger-ui-api-gateway.js\n"
-      f"\n"
-      f"antora:\n"
-      f"t-extensions:\n"
-      f"t-t-t-t-- \"@antora/lunr-extension\"\n"
+      f"cat >> antora.awk << EOF\n"
+      "BEGIN {\n"
+      "        RS=\"ui:\"\n" 
+													 
+      "}\n" 
+      "{\n" 
+      "        outfile = \"output_file_\" NR; print > outfile\n" 
+						   
+																						
+      "}\n" 
+									  
       f"EOF\n"
+      f"awk -f antora.awk  antora-playbook.yml\n"
+																							
+																				
       f"\n"
-      f"echo 'sed -i \"s/t-/ /g\" antora.yml'\n"
-      f"sed -i \"s/t-/ /g\" antora.yml"
-      f"\n"      
-      f"git add antora.yml\n"
-      f"echo 'after loop'\n"
+      f"if grep -c services/{applicationname} antora-playbook.yml; then\n"
+      f"  echo 'service already added'\n"
+      f"  else\n"  
+      f"  echo 'in loop'\n"
+      f"  cat >> output_file_1 << EOF\n"
+      f"  t-t-t-t-- url: https://github.com/nsbno/antora_generated_servicedocumentation.git\n"
+      f"  t-t-t-t-t-t-start_path: services/{applicationname}\n"
+      f"  ui:\n"
+      f"  t-t-bundle:\n"
+      f"  t-t-t-t-url: ./build/ui-bundle.zip\n"
+      f"  t-t-t-t-snapshot: true\n"
+      f"  t-t-supplemental_files: ./supplemental_ui\n"
+      f"\n"
+      f"  asciidoc:\n"
+      f"  t-t-extensions:\n"
+      f"  t-t-- ./extensions/swagger-ui-api-gateway.js\n"
+      f"\n"
+      f"  antora:\n"
+      f"  t-extensions:\n"
+      f"  t-t-t-t-- \"@antora/lunr-extension\"\n"
+      f"EOF\n"
+      f"  rm -f antora-playbook.yml\n"
+      f"  echo \"List\"\n"
+      f"  mv output_file_1 antora-playbook.yml\n"
+      f"fi\n"
+      f"\n"
+      f"echo 'sed -i \"s/t-/ /g\" antora-playbook.yml'\n"
+      f"sed -i \"s/t-/ /g\" antora-playbook.yml\n"
+				 
+      f"sed -i \"/^$/d\" antora-playbook.yml\n"     
+      f"git add antora-playbook.yml\n"
       f"git commit -m \"Update service list for portal\"\n"
       f"git push\n"
   )  
@@ -196,7 +210,7 @@ def updateportalgit(applicationname, services):
 
 def lambda_handler(event, context):
   s3 = boto3.client('s3')
-#  logger.info("Raw event " +  str(event))
+										  
   logger.info(json.dumps(event, indent=4, sort_keys=True))
   s3bucket = ""
   s3path = ""
@@ -259,10 +273,22 @@ def lambda_handler(event, context):
     )
 
 
-  try: 
+  try:
+    bucket = os.environ["servicedocumentaion_bucket"]
+    key = 'services'
+    s3_resource = boto3.resource('s3')
+    s3_object = s3_resource.Object(bucket, key)
+    servicelist = s3_object.get()['Body'].read().decode('utf-8').splitlines()
+  
+    lines = csv.reader(servicelist)
+    servicelist = []
+    
+    for line in lines:
+      servicelist.append(line)
+    
     gitportal = updateportalgit(
         developerportalchanges["applicationname"],
-        ["services1","service2"]
+        servicelist
     )
   except botocore.exceptions.ClientError as e:
     logger.info(
@@ -289,6 +315,7 @@ def lambda_handler(event, context):
     "Updating developer portal repo failed " + str(e)
     )
 
+ 
     
   return {
     'statusCode': 200,
