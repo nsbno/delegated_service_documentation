@@ -207,8 +207,8 @@ resource "aws_sqs_queue" "service_doc" {
 POLICY
 }
 
-resource "aws_sqs_queue" "dead_letter" {
-  name                      = "${var.name}-${var.env}-dead-letters-queue"
+resource "aws_sqs_queue" "sqs_dead_letter_queue" {
+  name                      = "${var.name_prefix}-dead-letters-queue"
   message_retention_seconds = var.message_retention_seconds
 
   tags                        = var.tags
