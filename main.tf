@@ -305,7 +305,10 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
   statement {
     effect = "Allow"
     actions = [
-      "s3:GetObject",
+                "s3:Get*",
+                "s3:List*",
+                "s3-object-lambda:Get*",
+                "s3-object-lambda:List*"
     ]
     resources =  [
                 "${aws_s3_bucket.staging.arn}/*",
