@@ -85,8 +85,7 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"= API Reference\n"
       f":page-layout: swagger\n"
       f":page-swagger-url: https://developer.common-services.vydev.io/json/{applicationname}.json\n"
-      f":reftext:"" {page-component-title}"
-		   
+      f":reftext:"" {page-component-title}"  
       f"EOF\n"
       f"\n"
       f"git add api.adoc\n"
@@ -112,9 +111,6 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"\n"
       f"  git add services.adoc\n"
       f"fi\n"
-	  
-	  
-	  
       f"git commit -m \"Update service doc for {applicationname}\"\n"
       f"git push\n"
   )  
@@ -150,26 +146,19 @@ def updateportalgit(applicationname, services):
       f"\n"
       f"git clone git@github.com:nsbno/developer-portal --branch master\n"
       f"\n"
-      f"cd ./developer-portal/\n"
-						   
+      f"cd ./developer-portal/\n"	   
       f"\n"
       f"echo \"Appending to file\"\n"
       f"\n"
       f"cat >> antora.awk << EOF\n"
       "BEGIN {\n"
-      "        RS=\"ui:\"\n" 
-													 
+      "        RS=\"ui:\"\n" 		 
       "}\n" 
       "{\n" 
-      "        outfile = \"output_file_\" NR; print > outfile\n" 
-						   
-																						
-      "}\n" 
-									  
+      "        outfile = \"output_file_\" NR; print > outfile\n"  																						
+      "}\n" 	  
       f"EOF\n"
-      f"awk -f antora.awk  antora-playbook.yml\n"
-																							
-																				
+      f"awk -f antora.awk  antora-playbook.yml\n"																																										
       f"\n"
       f"if grep -c services/{applicationname} antora-playbook.yml; then\n"
       f"  echo 'service already added'\n"
@@ -198,8 +187,7 @@ def updateportalgit(applicationname, services):
       f"fi\n"
       f"\n"
       f"echo 'sed -i \"s/t-/ /g\" antora-playbook.yml'\n"
-      f"sed -i \"s/t-/ /g\" antora-playbook.yml\n"
-				 
+      f"sed -i \"s/t-/ /g\" antora-playbook.yml\n"			 
       f"sed -i \"/^$/d\" antora-playbook.yml\n"     
       f"git add antora-playbook.yml\n"
       f"git commit -m \"Update service list for portal\"\n"
