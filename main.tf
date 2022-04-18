@@ -183,6 +183,11 @@ queue {
 resource "aws_sqs_queue" "service_doc" {
   name                        = "${var.name_prefix}-delegated-service-documentation"
   tags                        = var.tags
+
+  redrive_policy = jsonencode({
+    deadLetterTargetArn = aws_sqs_queue.sqs_dead_letter_queue.arn
+    maxReceiveCount     = var.maxReceiveCount
+  })
   
   policy = <<POLICY
 {
@@ -200,6 +205,13 @@ resource "aws_sqs_queue" "service_doc" {
   ]
 }
 POLICY
+}
+
+resource "aws_sqs_queue" "dead_letter" {
+  name                      = "${var.name}-${var.env}-dead-letters-queue"
+  message_retention_seconds = var.message_retention_seconds
+
+  tags                        = var.tags
 }
 
 ###################################################

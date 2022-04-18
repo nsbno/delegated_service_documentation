@@ -8,6 +8,14 @@ variable "hosted_zone_name" {
   type        = string
 }
 
+variable "message_retention_seconds" {
+  default = 1209600
+}
+
+variable "maxReceiveCount" {
+  default = 5
+}
+
 variable "source_account" {
   description = "A prefix used for naming resources."
   type        = string
