@@ -272,29 +272,6 @@ def lambda_handler(event, context):
     "Updating confluence with service documetnation failed " + str(e)
     )
 
-
-  try:
-    bucket = os.environ["servicedocumentaion_bucket"]
-    key = 'services'
-    s3_resource = boto3.resource('s3')
-    s3_object = s3_resource.Object(bucket, key)
-    servicelist = s3_object.get()['Body'].read().decode('utf-8').splitlines()
-  
-    lines = csv.reader(servicelist)
-    servicelist = []
-    
-    for line in lines:
-      servicelist.append(line)
-    
-    gitportal = updateportalgit(
-        developerportalchanges["applicationname"],
-        servicelist
-    )
-  except botocore.exceptions.ClientError as e:
-    logger.info(
-    "Getting portal parameters failed " + str(e)
-    )
-
   try:
     lamdba_client = boto3.client("lambda")
     response = lamdba_client.invoke(
