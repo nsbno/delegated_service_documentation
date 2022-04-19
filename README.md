@@ -14,6 +14,6 @@ module "servicedoc" {
   servicesla                  = "99.7"
   growthmetric                = "transaction count"
   aktivitetskode              = "12345"
-  api_gateway_id              = "abcde31kh5"
+  api_gateway_id              = module.api_gateway.rest_api_id
 }
 ```
