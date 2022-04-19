@@ -117,7 +117,7 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
   
   return cmd_to_run
 
-def updateportalgit(applicationname, services):
+def updateportalgit(applicationname):
   
   
   cmd_to_run = (
@@ -146,19 +146,19 @@ def updateportalgit(applicationname, services):
       f"\n"
       f"git clone git@github.com:nsbno/developer-portal --branch master\n"
       f"\n"
-      f"cd ./developer-portal/\n"	   
+      f"cd ./developer-portal/\n"
       f"\n"
       f"echo \"Appending to file\"\n"
       f"\n"
       f"cat >> antora.awk << EOF\n"
       "BEGIN {\n"
-      "        RS=\"ui:\"\n" 		 
+      "        RS=\"ui:\"\n"
       "}\n" 
       "{\n" 
-      "        outfile = \"output_file_\" NR; print > outfile\n"  																						
-      "}\n" 	  
+      "        outfile = \"output_file_\" NR; print > outfile\n"
+      "}\n"
       f"EOF\n"
-      f"awk -f antora.awk  antora-playbook.yml\n"																																										
+      f"awk -f antora.awk  antora-playbook.yml\n"
       f"\n"
       f"if grep -c services/{applicationname} antora-playbook.yml; then\n"
       f"  echo 'service already added'\n"
@@ -187,7 +187,7 @@ def updateportalgit(applicationname, services):
       f"fi\n"
       f"\n"
       f"echo 'sed -i \"s/t-/ /g\" antora-playbook.yml'\n"
-      f"sed -i \"s/t-/ /g\" antora-playbook.yml\n"			 
+      f"sed -i \"s/t-/ /g\" antora-playbook.yml\n"
       f"sed -i \"/^$/d\" antora-playbook.yml\n"     
       f"git add antora-playbook.yml\n"
       f"git commit -m \"Update service list for portal\"\n"
@@ -258,6 +258,15 @@ def lambda_handler(event, context):
   except botocore.exceptions.ClientError as e:
     logger.info(
     "Updating confluence with service documetnation failed " + str(e)
+    )
+
+  try:
+    gitportal = updateportalgit(
+        developerportalchanges["applicationname"]
+    )
+  except botocore.exceptions.ClientError as e:
+    logger.info(
+    "Getting portal parameters failed " + str(e)
     )
 
   try:
