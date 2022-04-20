@@ -258,6 +258,7 @@ resource "aws_lambda_function" "build_antora_site" {
   handler          = "build-antora-site.lambda_handler"
   role             = aws_iam_role.build_antora_site_lamda_role.arn
   runtime          = "python3.8"
+  timeout          = "25"
   environment {
     variables = {
       ecs_cluster = aws_ecs_cluster.cluster.arn

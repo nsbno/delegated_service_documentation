@@ -4,6 +4,7 @@ import botocore
 import os
 import logging
 import csv
+import time
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -85,7 +86,7 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"= API Reference\n"
       f":page-layout: swagger\n"
       f":page-swagger-url: https://developer.common-services.vydev.io/json/{applicationname}.json\n"
-      f":reftext:"" {page-component-title}"  
+      f":reftext: {applicationname}\n" 
       f"EOF\n"
       f"\n"
       f"git add api.adoc\n"
@@ -232,6 +233,8 @@ def lambda_handler(event, context):
     logger.info(
     "Getting Servicedoc parameters failed " + str(e)
     )
+
+  time.sleep(15)
 
   try:
     lamdba_client = boto3.client("lambda")
