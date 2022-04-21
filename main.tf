@@ -415,7 +415,7 @@ resource "aws_lambda_function" "basic_auth" {
   filename         = data.archive_file.basic_auth_function.output_path
   function_name    = "${var.name_prefix}-basic_auth"
   role             = aws_iam_role.lambdaedge.arn
-  handler          = "basic-auth.handler"
+  handler          = "lambdaedge.handler"
   source_code_hash = filebase64sha256(data.archive_file.basic_auth_function.output_path)
   runtime          = "nodejs12.x"
   description      = "Protect CloudFront distributions with Basic Authentication"
