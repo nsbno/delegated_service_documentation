@@ -119,7 +119,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
     lambda_function_association {
       event_type   = "viewer-request"
-      lambda_arn   = aws_lambda_function.basic_auth.arn
+      lambda_arn   = aws_lambda_function.basic_auth.qualified_arn
       include_body = false
     }
 
