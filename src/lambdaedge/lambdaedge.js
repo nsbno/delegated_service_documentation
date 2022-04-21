@@ -27,10 +27,12 @@ exports.handler = (event, context, callback) => {
         ]
       },
     }
-
+    console.log("failed")
     callback(null, response)
     return
   }
+  console.log("Completed")
+  console.log(headers.authorization[0].value)
 
   // Continue request processing if authentication passed
   callback(null, request)
