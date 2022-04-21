@@ -1,6 +1,6 @@
 provider "aws" {
   # Module expects aws.certificate_provider set to us-east-1 to be passed in via the "providers" argument
-  alias   = "certificate_provider"
+  alias   = "useast"
   region  = "us-east-1"
 }
 
@@ -36,7 +36,7 @@ resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
 resource "aws_acm_certificate" "cert_website" {
   domain_name       = var.site_name
   validation_method = "DNS"
-  provider          = aws.certificate_provider
+  provider          = aws.useast
   tags              = var.tags
 
   lifecycle {
@@ -64,7 +64,7 @@ resource "aws_route53_record" "cert_website_validation" {
 resource "aws_acm_certificate_validation" "main" {
   certificate_arn         = aws_acm_certificate.cert_website.arn
   validation_record_fqdns = [for record in aws_route53_record.cert_website_validation : record.fqdn]
-  provider                = aws.certificate_provider
+  provider                = aws.useast
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
@@ -420,6 +420,7 @@ resource "aws_lambda_function" "basic_auth" {
   runtime          = "nodejs12.x"
   description      = "Protect CloudFront distributions with Basic Authentication"
   publish          = true
+  provider         = aws.useast
 }
 
 resource "aws_iam_role" "lambdaedge" {
