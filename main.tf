@@ -401,7 +401,7 @@ resource "aws_iam_role_policy_attachment" "ssmaccess" {
 
 data "archive_file" "basic_auth_function" {
   type        = "zip"
-  source_file = "${path.module}/src/lambdaedge/lambdaedge.py"
+  source_file = "${path.module}/src/lambdaedge/lambdaedge.js"
   output_path = "${path.module}/src/lambdaedge/lambdaedge.zip"
 }
 
