@@ -392,3 +392,46 @@ resource "aws_iam_role_policy_attachment" "ssmaccess" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMReadOnlyAccess"
   role       = aws_iam_role.fargate_task.id
 }
+
+###################################################
+#                                                 #
+# Lambda EDGE for Auth                            #
+#                                                 #
+###################################################
+
+data "archive_file" "basic_auth_function" {
+  type        = "zip"
+  source_file = "${path.module}/src/lambdaedge/lambdaedge.py"
+  output_path = "${path.module}/src/lambdaedge/lambdaedge.zip"
+}
+
+resource "aws_lambda_function" "basic_auth" {
+  filename         = data.archive_file.basic_auth_function.output_path
+  function_name    = "${var.name_prefix}-basic_auth"
+  role             = aws_iam_role.lambdaedge.arn
+  handler          = "basic-auth.handler"
+  source_code_hash = filebase64sha256(data.archive_file.basic_auth_function.output_path)
+  runtime          = "nodejs12.x"
+  description      = "Protect CloudFront distributions with Basic Authentication"
+  publish          = true
+}
+
+resource "aws_iam_role" "lambdaedge" {
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": [
+          "lambda.amazonaws.com",
+          "edgelambda.amazonaws.com"
+        ]
+      },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}
+EOF
+}
