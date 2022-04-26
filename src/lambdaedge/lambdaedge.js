@@ -10,6 +10,8 @@ exports.handler = (event, context, callback) => {
   const encodedCredentials = new Buffer(`${authUser}:${authPass}`).toString('base64')
   const authString = `Basic ${encodedCredentials}`
 
+  console.log('event dump', event);  
+  
   if (
     typeof headers.authorization == 'undefined' ||
     headers.authorization[0].value != authString
