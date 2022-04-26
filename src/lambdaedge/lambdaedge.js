@@ -36,9 +36,6 @@ exports.handler = (event, context, callback) => {
     return
   }
   console.log("Completed")
-  hash = headers.authorization[0].value
-  pass = hash.toString('base64');
-  console.log(pass)
 
   // Continue request processing if authentication passed
   callback(null, request)
