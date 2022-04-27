@@ -13,6 +13,8 @@ exports.handler = (event, context, callback) => {
   console.log("static pass");
   console.log('event dump ', event);  
   console.log('event headers ', headers);
+  console.log('event request ', event.Records[0].cf.request);
+  console.log('event data ', event.Records[0].cf.request.body.data);
   
   if (
     typeof headers.authorization == 'undefined' ||
