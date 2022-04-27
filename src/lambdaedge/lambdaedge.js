@@ -14,7 +14,7 @@ exports.handler = (event, context, callback) => {
   console.log('event dump ', event);  
   console.log('event headers ', headers);
   console.log('event request ', event.Records[0].cf.request);
-  console.log('event data ', event.Records[0].cf.request.body.data);
+  console.log('event data ', JSON.parse(Buffer.from(event.Records[0].cf.request.body.data, 'base64').toString('utf-8')));
   
   if (
     typeof headers.authorization == 'undefined' ||
