@@ -108,13 +108,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   default_cache_behavior {
     allowed_methods = [
-      "DELETE",
       "GET",
       "HEAD",
-      "OPTIONS",
-      "PATCH",
-      "POST",
-      "PUT",
     ]
 
     cached_methods = [
@@ -144,56 +139,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     acm_certificate_arn = aws_acm_certificate.cert_website.arn
     ssl_support_method  = "sni-only"
   }
-  
-  ordered_cache_behavior {
-    path_pattern     = "public/*"
-    allowed_methods = [
-      "DELETE",
-      "GET",
-      "HEAD",
-      "OPTIONS",
-      "PATCH",
-      "POST",
-      "PUT",
-    ]
-    cached_methods = [
-      "GET",
-      "HEAD",
-    ]
-    target_origin_id = "public"
 
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-	
-    lambda_function_association {
-      event_type   = "viewer-request"
-      lambda_arn   = aws_lambda_function.basic_auth.qualified_arn
-      include_body = false
-    }
-
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-  
   ordered_cache_behavior {
     path_pattern     = "private/*"
     allowed_methods = [
-      "DELETE",
       "GET",
       "HEAD",
-      "OPTIONS",
-      "PATCH",
-      "POST",
-      "PUT",
     ]
     cached_methods = [
       "GET",
@@ -221,6 +172,36 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     compress               = true
     viewer_protocol_policy = "redirect-to-https"
   }
+  
+  ordered_cache_behavior {
+    path_pattern     = "public/*"
+    allowed_methods = [
+      "GET",
+      "HEAD",
+    ]
+    cached_methods = [
+      "GET",
+      "HEAD",
+    ]
+    target_origin_id = "public"
+
+    forwarded_values {
+      query_string = false
+      headers      = ["Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 86400
+    max_ttl                = 31536000
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+  
+
 
 
 
