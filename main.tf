@@ -231,7 +231,7 @@ resource "aws_s3_bucket_policy" "s3_to_cloudfront" {
 
 resource "aws_s3_bucket_policy" "s3_to_cloudfront_authbucket" {
   bucket = aws_s3_bucket.authbucket.id
-  policy = data.aws_iam_policy_document.s3_cloudfront.json
+  policy = data.aws_iam_policy_document.s3_cloudfront_public.json
 }
 
 ###################################################

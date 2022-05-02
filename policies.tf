@@ -102,6 +102,66 @@ data "aws_iam_policy_document" "s3_cloudfront" {
   }
 }
 
+data "aws_iam_policy_document" "s3_cloudfront_public" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.authbucket.arn}/*"]
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn]
+    }
+  }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.authbucket.arn]
+
+    principals {
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.origin_access_identity.iam_arn]
+    }
+  }
+
+  statement {
+    actions   = [
+                "s3:PutObjectAcl*",
+                "s3:PutObject*",
+                "s3:GetObject*"
+            ]
+    resources = [
+                "${aws_s3_bucket.authbucket.arn}/*",
+                "${aws_s3_bucket.authbucket.arn}"
+           ]
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.source_account}:root"]
+     }
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:PutObject*",
+      "s3:PutObjectAcl*",
+      "s3:GetObject*",
+      "s3:DeleteObject*"
+    ]
+    resources = ["${aws_s3_bucket.authbucket.arn}/json/*"]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalOrgID"
+      values = [
+        local.current_organization_id
+      ]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "s3_policy" {
   version = "2012-10-17"
 
