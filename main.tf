@@ -25,7 +25,7 @@ resource "aws_s3_bucket" "verified" {
   tags = var.tags
 }
 
-resource "aws_s3_bucket_public" "authbucket" {
+resource "aws_s3_bucket" "authbucket" {
   bucket = var.verified_bucket_name == "" ? "${local.current_account_id}-${var.name_prefix}-service-documentation-public" : var.verified_bucket_name
   tags = var.tags
 }
