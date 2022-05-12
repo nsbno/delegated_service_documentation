@@ -108,7 +108,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       "HEAD",
     ]
 
-    target_origin_id = "public"
+    target_origin_id = aws_cloudfront_origin_access_identity.origin_access_identity.id
 
     forwarded_values {
       query_string = false
