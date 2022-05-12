@@ -478,11 +478,11 @@ resource "aws_iam_role_policy_attachment" "ssmaccess" {
 # Lambda EDGE for Auth                            #
 #                                                 #
 ###################################################
-data "aws_ssm_parameter" "antorausername" {
+resource "aws_ssm_parameter" "antorausername" {
   name = "/antoraportaluser"
 }
 
-data "aws_ssm_parameter" "antorauserpass" {
+resource "aws_ssm_parameter" "antorauserpass" {
   name = "/antoraportalpass"
 }
 
