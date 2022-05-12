@@ -86,6 +86,15 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
+  origin {
+    domain_name = aws_s3_bucket.authbucket.bucket_regional_domain_name
+    origin_id   = "public"
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.origin_access_identity.cloudfront_access_identity_path
+    }
+  }
+  
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
@@ -136,6 +145,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     acm_certificate_arn = aws_acm_certificate.cert_website.arn
     ssl_support_method  = "sni-only"
   }
+
   restrictions {
     geo_restriction {
       restriction_type = "none"
