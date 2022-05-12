@@ -478,14 +478,6 @@ resource "aws_iam_role_policy_attachment" "ssmaccess" {
 # Lambda EDGE for Auth                            #
 #                                                 #
 ###################################################
-resource "aws_ssm_parameter" "antorausername" {
-  name = "/antoraportaluser"
-}
-
-resource "aws_ssm_parameter" "antorauserpass" {
-  name = "/antoraportalpass"
-}
-
 
 data "archive_file" "basic_auth_function" {
   type        = "zip"
