@@ -560,10 +560,7 @@ resource "aws_iam_role_policy" "lambdassm" {
         "ssm:GetParameter",
         "ssm:GetParameters"
       ],
-      "Resource": [
-      aws_ssm_parameter.antorausername.arn,
-      aws_ssm_parameter.antorauserpass.arn,
-    ]
+      "Resource": [*]
     }
   ]
 }
