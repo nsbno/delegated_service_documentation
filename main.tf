@@ -478,6 +478,14 @@ resource "aws_iam_role_policy_attachment" "ssmaccess" {
 # Lambda EDGE for Auth                            #
 #                                                 #
 ###################################################
+data "aws_ssm_parameter" "antorausername" {
+  name = "/antoraportaluser"
+}
+
+data "aws_ssm_parameter" "antorauserpass" {
+  name = "/antoraportalpass"
+}
+
 
 data "archive_file" "basic_auth_function" {
   type        = "zip"
@@ -532,6 +540,30 @@ resource "aws_iam_role_policy" "lambda" {
         "logs:PutLogEvents"
       ],
       "Resource": "arn:aws:logs:*:*:*"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy" "lambdassm" {
+  role = "${aws_iam_role.lambdaedge.id}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DescribeParameters",
+        "ssm:GetParameter",
+        "ssm:GetParameters"
+      ],
+      "Resource": [
+      aws_ssm_parameter.antorausername.arn,
+      aws_ssm_parameter.antorauserpass.arn,
+    ]
     }
   ]
 }
