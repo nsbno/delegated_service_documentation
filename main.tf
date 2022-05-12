@@ -560,7 +560,7 @@ resource "aws_iam_role_policy" "lambdassm" {
         "ssm:GetParameter",
         "ssm:GetParameters"
       ],
-      "Resource": [*]
+      "Resource": "*"
     }
   ]
 }
