@@ -321,7 +321,7 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
     actions = [
       "iam:PassRole",
     ]
-    resources = [aws_iam_role.fargate_task.arn]
+    resources = ["arn:aws:iam::${local.current_account_id}:role/common-services-single-use-tasks"]
   }
   statement {
     effect = "Allow"
