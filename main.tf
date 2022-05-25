@@ -406,7 +406,7 @@ resource "aws_iam_role_policy_attachment" "ssmaccess" {
 }
 	
 resource "aws_iam_role_policy_attachment" "ecsaccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonECSTaskExecutionRolePolicy"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
   role       = aws_iam_role.fargate_task.id
 }
 
