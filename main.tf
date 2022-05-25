@@ -362,7 +362,7 @@ data "aws_iam_policy_document" "build_antora_site_permissions" {
 ###################################################
 
 module "single_use_fargate_task" {
-  source      = "github.com/nsbno/terraform-aws-single-use-fargate-task?ref=78e9578"
+  source      = "github.com/nsbno/terraform-aws-single-use-fargate-task?ref=652c2e7"
   name_prefix = "${var.name_prefix}-antora"
   tags        = var.tags
 }
