@@ -273,7 +273,7 @@ resource "aws_lambda_function" "build_antora_site" {
   timeout          = "25"
   environment {
     variables = {
-      ecs_cluster = aws_ecs_cluster.cluster.arn
+      ecs_cluster = "${module.single_use_fargate_task.ecs_cluster_arn}"
       fargate_lambda_name = var.fargate_lambda_name
       image = var.image
       subnets = var.subnets
