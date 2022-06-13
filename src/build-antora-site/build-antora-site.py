@@ -15,7 +15,7 @@ def read_file_from_s3(s3_bucket):
 def read_sqs(s3_bucket):
   return "content"
 
-def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname, 
+def updategit(servicedoc, about_file, aktivitetskode, api_gateway_arn, applicationname, 
       growthmetric, owner, servicesla, slack, swagger_file, technicalowner):
   print("Application name " + applicationname)
   cmd_to_run = (
@@ -99,18 +99,18 @@ def updategit(about_file, aktivitetskode, api_gateway_arn, applicationname,
       f"git add index.adoc\n"
       f"\n"   
       f"cd ../../../../../home/modules/ROOT/pages\n"
-      f"if grep -c {applicationname}::api.adoc services.adoc; then\n"
+      f"if grep -c {applicationname}::api.adoc {servicedoc}; then\n"
       f"  echo 'service already added {applicationname}'\n"
       f"  else\n"     
       f"  echo 'in loop'\n"
-      f"  head -n -1 services.adoc > tmp.txt && mv tmp.txt services.adoc\n"
+      f"  head -n -1 {servicedoc} > tmp.txt && mv tmp.txt {servicedoc}\n"
       f"\n"
-      f"  cat >> services.adoc << EOF\n"
+      f"  cat >> {servicedoc} << EOF\n"
       f"  |xref:{applicationname}::api.adoc[], Microservice \n"
       f"  |===\n"
       f"EOF\n"
       f"\n"
-      f"  git add services.adoc\n"
+      f"  git add {servicedoc}\n"
       f"fi\n"
       f"git commit -m \"Update service doc for {applicationname}\"\n"
       f"git push\n"
@@ -214,10 +214,23 @@ def lambda_handler(event, context):
     s3bucket = eventrecor["Records"][0]["s3"]["bucket"]["name"]
     logger.info("key record " +  str(eventrecor["Records"][0]["s3"]["object"]["key"]))
     s3path = eventrecor["Records"][0]["s3"]["object"]["key"]
+    s3path = eventrecor["Records"][0]["s3"]["object"]["key"]
+    s3pathelements = s3path.split("/")
+    accountnumber = str(s3pathelements[1])
+    print("s3path " + accountnumber)
+    digitalaccounts = ["247856180525","184465511165"]
+    servicefile = ""
+    if accountnumber in digitalaccounts:
+      print("digital account ")
+      servicefile = "servicesdigital.adoc"
+    else:
+      print("not digital account ")
+      servicefile = "services.adoc"
     data = s3.get_object(Bucket=s3bucket, Key=s3path)
     contents = data['Body'].read()
     developerportalchanges = json.loads(contents.decode("utf-8"))
     gitresult = updategit(
+        servicefile,
         developerportalchanges["about_file"],
         developerportalchanges["aktivitetskode"],
         developerportalchanges["api_gateway_arn"],
