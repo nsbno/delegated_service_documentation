@@ -15,7 +15,7 @@ def read_file_from_s3(s3_bucket):
 def read_sqs(s3_bucket):
   return "content"
 
-def updategit(servicedoc, about_file, aktivitetskode, api_gateway_arn, applicationname, 
+def updategit(servicedoc, about_file, aktivitetskode, applicationname, 
       growthmetric, owner, servicesla, slack, swagger_file, technicalowner):
   print("Application name " + applicationname)
   cmd_to_run = (
@@ -233,7 +233,6 @@ def lambda_handler(event, context):
         servicefile,
         developerportalchanges["about_file"],
         developerportalchanges["aktivitetskode"],
-        developerportalchanges["api_gateway_arn"],
         developerportalchanges["applicationname"],
         developerportalchanges["growthmetric"],
         developerportalchanges["owner"],
