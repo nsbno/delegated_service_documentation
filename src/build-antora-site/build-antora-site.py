@@ -16,7 +16,7 @@ def read_sqs(s3_bucket):
   return "content"
 
 def updategit(servicedoc, about_file, aktivitetskode, applicationname, 
-      growthmetric, owner, servicesla, slack, swagger_file, technicalowner):
+      growthmetric, owner, servicesla, slack, technicalowner):
   print("Application name " + applicationname)
   cmd_to_run = (
       f"\n"
@@ -238,7 +238,6 @@ def lambda_handler(event, context):
         developerportalchanges["owner"],
         developerportalchanges["servicesla"],
         developerportalchanges["slack"],
-        developerportalchanges["swagger_file"],
         developerportalchanges["technicalowner"]
     )
   except botocore.exceptions.ClientError as e:
