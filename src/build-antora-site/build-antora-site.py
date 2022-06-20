@@ -15,7 +15,7 @@ def read_file_from_s3(s3_bucket):
 def read_sqs(s3_bucket):
   return "content"
 
-def updategit(servicedoc, about_file, aktivitetskode, applicationname, 
+def updategit(servicedoc, servicepagedoc, about_file, aktivitetskode, applicationname, 
       growthmetric, owner, servicesla, slack, technicalowner):
   print("Application name " + applicationname)
   cmd_to_run = (
@@ -111,6 +111,19 @@ def updategit(servicedoc, about_file, aktivitetskode, applicationname,
       f"EOF\n"
       f"\n"
       f"  git add {servicedoc}\n"
+      f"fi\n"
+      f"if grep -c {applicationname}::api.adoc {servicepagedoc}; then\n"
+      f"  echo 'service already added {applicationname}'\n"
+      f"  else\n"     
+      f"  echo 'in loop'\n"
+      f"  head -n -1 {servicepagedoc} > tmp2.txt && mv tmp2.txt {servicepagedoc}\n"
+      f"\n"
+      f"  cat >> {servicepagedoc} << EOF\n"
+      f"  |{applicationname}, {servicesla}, {technicalowner}, {owner}, {slack}, {growthmetric} \n"
+      f"  |===\n"
+      f"EOF\n"
+      f"\n"
+      f"  git add {servicepagedoc}\n"
       f"fi\n"
       f"git commit -m \"Update service doc for {applicationname}\"\n"
       f"git push\n"
@@ -220,17 +233,21 @@ def lambda_handler(event, context):
     print("s3path " + accountnumber)
     digitalaccounts = ["247856180525","184465511165"]
     servicefile = ""
+    servicepage = ""
     if accountnumber in digitalaccounts:
       print("digital account ")
       servicefile = "servicesdigital.adoc"
+      servicepage = "servicespagesdigital.adoc"
     else:
       print("not digital account ")
       servicefile = "services.adoc"
+      servicepage = "servicespages.adoc"
     data = s3.get_object(Bucket=s3bucket, Key=s3path)
     contents = data['Body'].read()
     developerportalchanges = json.loads(contents.decode("utf-8"))
     gitresult = updategit(
         servicefile,
+        servicepage,
         developerportalchanges["about_file"],
         developerportalchanges["aktivitetskode"],
         developerportalchanges["applicationname"],
