@@ -119,7 +119,7 @@ def updategit(servicedoc, servicepagedoc, about_file, aktivitetskode, applicatio
       f"  head -n -1 {servicepagedoc} > tmp2.txt && mv tmp2.txt {servicepagedoc}\n"
       f"\n"
       f"  cat >> {servicepagedoc} << EOF\n"
-      f"  |{applicationname} | {servicesla} | {technicalowner} | {owner} | {slack} | {growthmetric} \n"
+      f"  |xref:{applicationname}::api.adoc[] | {servicesla} | {technicalowner} | {owner} | {slack} | {growthmetric} \n"
       f"  |===\n"
       f"EOF\n"
       f"\n"
