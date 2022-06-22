@@ -69,3 +69,9 @@ variable "subnets" {
   type        = string
 }
 
+variable "pagerduty_endpoint" {
+  description = "Endpoint for sending pagerduty alarm."
+  type        = string
+  default     = null
+}
+

@@ -283,6 +283,37 @@ resource "aws_lambda_function" "build_antora_site" {
   }
 }
 
+resource "aws_cloudwatch_metric_alarm" "build_antora_site_errors" {
+  metric_name         = "Errors"
+  alarm_name          = "${aws_lambda_function.build_antora_site.function_name}-error"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  threshold           = 1
+  namespace           = "AWS/Lambda"
+  period              = 60
+  statistic           = "Sum"
+  alarm_description   = "${aws_lambda_function.build_antora_site.function_name} has thrown an error after invocation"
+  tags                = var.tags
+  alarm_actions       = [aws_sns_topic.sns_alarms_antoraportal]
+  ok_actions          = [aws_sns_topic.sns_alarms_antoraportal]
+  treat_missing_data  = "notBreaching"
+  dimensions = {
+    FunctionName = aws_lambda_function.build_antora_site.function_name
+  }
+}
+
+resource "aws_sns_topic" "sns_alarms_antoraportal" {
+  name = "${var.name_prefix}-sns_alarms_antoraportal"
+}
+
+resource "aws_sns_topic_subscription" "alarms_to_pagerduty" {
+  count                  = var.pagerduty_endpoint == null ? 0 : 1
+  endpoint               = var.pagerduty_endpoint
+  protocol               = "https"
+  endpoint_auto_confirms = true
+  topic_arn              = aws_sns_topic.sns_alarms_antoraportal.arn
+}
+
 resource "aws_iam_role" "build_antora_site_lamda_role" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
