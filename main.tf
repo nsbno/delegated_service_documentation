@@ -294,8 +294,8 @@ resource "aws_cloudwatch_metric_alarm" "build_antora_site_errors" {
   statistic           = "Sum"
   alarm_description   = "${aws_lambda_function.build_antora_site.function_name} has thrown an error after invocation"
   tags                = var.tags
-  alarm_actions       = [aws_sns_topic.sns_alarms_antoraportal]
-  ok_actions          = [aws_sns_topic.sns_alarms_antoraportal]
+  alarm_actions       = [aws_sns_topic.sns_alarms_antoraportal.arn]
+  ok_actions          = [aws_sns_topic.sns_alarms_antoraportal.arn]
   treat_missing_data  = "notBreaching"
   dimensions = {
     FunctionName = aws_lambda_function.build_antora_site.function_name
