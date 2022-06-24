@@ -121,7 +121,6 @@ def updategit(servicedoc, servicepagedoc, about_file, aktivitetskode, applicatio
       f"EOF\n"
       f"\n"
       f"git add {servicepagedoc}\n"
-      f"fi\n"
       f"git commit -m \"Update service doc for {applicationname}\"\n"
       f"git push\n"
   )  
