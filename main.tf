@@ -25,6 +25,14 @@ resource "aws_s3_bucket" "verified" {
   tags = var.tags
 }
 
+resource "aws_s3_bucket_ownership_controls" "verified" {
+  bucket = aws_s3_bucket.verified.id
+
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 resource "aws_s3_bucket" "authbucket" {
   bucket = var.verified_bucket_name == "" ? "${local.current_account_id}-${var.name_prefix}-service-documentation-public" : var.verified_bucket_name
   tags = var.tags
