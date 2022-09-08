@@ -29,7 +29,7 @@ resource "aws_s3_bucket_ownership_controls" "verified" {
   bucket = aws_s3_bucket.verified.id
 
   rule {
-    object_ownership = "BucketOwnerEnforced"
+    object_ownership = "BucketOwnerPreferred"
   }
 }
 
