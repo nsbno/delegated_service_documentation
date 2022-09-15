@@ -15,7 +15,7 @@ def read_file_from_s3(s3_bucket):
 def read_sqs(s3_bucket):
   return "content"
 
-def updategit(servicedoc, servicepagedoc, about_file, aktivitetskode, applicationname, 
+def updategit(servicedoc, servicepagedoc, aktivitetskode, applicationname,
       growthmetric, owner, servicesla, slack, technicalowner):
   print("Application name " + applicationname)
   cmd_to_run = (
