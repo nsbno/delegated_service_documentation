@@ -244,7 +244,6 @@ def lambda_handler(event, context):
     gitresult = updategit(
         servicefile,
         servicepage,
-        developerportalchanges["about_file"],
         developerportalchanges["aktivitetskode"],
         developerportalchanges["applicationname"],
         developerportalchanges["growthmetric"],
