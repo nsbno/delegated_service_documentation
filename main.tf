@@ -80,3 +80,16 @@ resource "aws_s3_bucket_policy" "s3_to_external_accounts" {
   bucket = aws_s3_bucket.staging.id
   policy = data.aws_iam_policy_document.s3_for_external_accounts.json
 }
+
+resource "aws_s3_bucket" "verified" {
+  bucket = var.verified_bucket_name == "" ? "${local.current_account_id}-${var.name_prefix}-service-documentation" : var.verified_bucket_name
+  tags = var.tags
+}
+
+resource "aws_s3_bucket_ownership_controls" "verified" {
+  bucket = aws_s3_bucket.verified.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
